@@ -1,6 +1,6 @@
 # debuggerUI
 <img src="/repository/TestDisplay.png"/>
-recreation of the logs ui from Deadline
+recreation of the logs ui from Deadline.
 i kinda liked it so i made my own
 
 > [!WARNING]
