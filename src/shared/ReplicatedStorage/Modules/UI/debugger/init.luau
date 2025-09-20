@@ -46,11 +46,14 @@ return function(InitRoot: Instance)
 	end
 
 	-- renders root
-	function dispatch:render(): () -> nil
-		root:render(React.createElement(debugGui, self.texts, nil))
+	function dispatch:render(onRender): (() -> ()) -> boolean
+		local success, output = pcall(root.render, root, React.createElement(debugGui, self.texts, nil))
+		if onRender ~= nil then
+			onRender(success)
+		end
 	end
 
-	-- sends data to texts and then renders it
+	-- sends data to texts and renders it
 	function dispatch:sendText(data): (
 		{
 			Text: string | any | nil,
@@ -58,7 +61,7 @@ return function(InitRoot: Instance)
 			TextColor: Color3 | nil,
 			Font: Enum.Font | nil,
 			LifeTime: number | nil,
-			LayoutOrder: nil | number, -- (questionable actually.)
+			LayoutOrder: nil | number,
 
 			_disappearingGoal: nil | number,
 			_baseLifeTime: nil | number,
@@ -69,9 +72,11 @@ return function(InitRoot: Instance)
 			or self.tagSystem == "GenerateGUID" and `{self:countTexts() + 1}-{HttpService:GenerateGUID(false)}`
 			or self.tagSystem == "Tick" and tick() / 4294967296 -- dividing with 32 bit. once humanity will reach tick beyond 64 bit, this is what still be standing and working for a bit more time (maybe)
 			or `SelectAProperTagSystem-{math.random(-255, 255)}` -- wrong input for tagSystem
-		data._endTick = tick() + (data.LifeTime or 5) + (1 / 60) -- additional frame time
+
+		data._creationTick = tick()
+		data._endTick = data._creationTick + (data.LifeTime or 10) + (1 / 60) -- additional frame time
 		self.texts[tostring(self.currentTag)] = data -- simple as that.
-		self:render() -- throw that in oven and bake it
+		self:render()
 	end
 
 	-- deleter. could be more optimized tho.

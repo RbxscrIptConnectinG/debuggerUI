@@ -3,6 +3,12 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
+      "Remotes": {
+        "$className": "Folder",
+        "ServerLog": {
+          "$className": "RemoteEvent"
+        }
+      },
       "Modules": {
         "$className": "Folder",
         "$path": "src/shared/ReplicatedStorage/Modules",

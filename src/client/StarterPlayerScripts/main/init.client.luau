@@ -6,21 +6,16 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LogService = game:GetService("LogService")
-local UserInputService = game:GetService("UserInputService")
-local Modules = ReplicatedStorage:WaitForChild("Modules")
-local Packages = Modules:WaitForChild("Packages")
 
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local ServerLog = Remotes:WaitForChild("ServerLog")
+
+local Modules = ReplicatedStorage:WaitForChild("Modules")
 local UIs = Modules:WaitForChild("UI")
 
 local LocalPlayer = Players.LocalPlayer
 
 local debuggerUIRoot, dispatch = require(UIs:WaitForChild("debugger"))(LocalPlayer.PlayerGui)
-
-local randomTexts = require(script:WaitForChild("randomTexts"))
-
-local function getLine(space: boolean)
-	return `[{script:GetFullName()}:{debug.info(2, "l")}]` .. (space and " " or "")
-end
 
 --[[
 		
@@ -30,17 +25,48 @@ end
 				TextColor = custom or Color3.fromRGB(255, 255, 255),
 				Font = custom or Enum.Font.Code,
 				LifeTime = custom or 5,
-				LayoutOrder = custom or 1,
 
 			Questionable to edit data:
+				LayoutOrder = automatic,
 				_baseLifeTime = props.LifeTime or 5,
-				_disappearingGoal = 0.3 <- (props.LifeTime / _static_LifeTime) -> _disappearing
+				_disappearingGoal = 0.01 <- (props.LifeTime / _static_LifeTime) -> _disappearing
 
 			Unrecommended to edit data:
 				_currentTick = tick(),
 				_disappearing = false,
 		
 --]]
+
+local colors = {
+	[Enum.MessageType.MessageOutput] = Color3.new(255, 255, 255),
+	[Enum.MessageType.MessageError] = Color3.fromRGB(255, 68, 68),
+	[Enum.MessageType.MessageInfo] = Color3.fromRGB(75, 163, 255),
+	[Enum.MessageType.MessageWarning] = Color3.fromRGB(255, 142, 60),
+}
+
+LogService.MessageOut:Connect(function(message, messageType: Enum.MessageType)
+	dispatch:sendText({
+		Text = message,
+		TextColor = colors[messageType] or colors[Enum.MessageType.MessageOutput],
+	})
+end)
+
+ServerLog.OnClientEvent:Connect(function(message, enumValue)
+	dispatch:sendText({
+		Text = message,
+		TextColor = colors[Enum.MessageType:FromValue(enumValue or 0)],
+	})
+end)
+
+--[[-- testing zone
+
+local UserInputService = game:GetService("UserInputService")
+
+local randomTexts = require(script:WaitForChild("randomTexts"))
+
+local function getLine(space: boolean)
+	return `[{script:GetFullName()}:{debug.info(2, "l")}]` .. (space and " " or "")
+end
 
 local function start()
 	UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
@@ -60,3 +86,4 @@ local function start()
 	end)
 end
 start()
+]]

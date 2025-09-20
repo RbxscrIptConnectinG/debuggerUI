@@ -21,14 +21,14 @@ function debugText:init(props)
 		TextSize = props.TextSize or 11,
 		TextColor = props.TextColor or Color3.fromRGB(255, 255, 255),
 		Font = props.Font or defaultFont,
-		LifeTime = tick() + (props.LifeTime or 5),
+		LifeTime = tick() + (props.LifeTime or 10),
 		LayoutOrder = props.LayoutOrder or 1,
 
 		-- DO NOT EDIT
-		_baseLifeTime = props.LifeTime or 5,
+		_baseLifeTime = props.LifeTime or 10,
 		_currentTick = tick(),
 		_disappearing = false,
-		_disappearingGoal = 0.3,
+		_disappearingGoal = 0.01,
 	})
 end
 
@@ -60,7 +60,7 @@ function debugText:render()
 		backgrounds[i] = React.createElement("Frame", {
 			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
 			BorderSizePixel = 0,
-			BackgroundTransparency = Transparency,
+			BackgroundTransparency = 0.3 + Transparency,
 			Size = UDim2.new(0, size.X, 0, math.ceil(size.Y)),
 			LayoutOrder = i,
 			ZIndex = -5,

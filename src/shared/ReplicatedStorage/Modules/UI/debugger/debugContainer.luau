@@ -14,7 +14,7 @@ function debugContainer:render()
 		UIListLayout = React.createElement("UIListLayout", {
 			HorizontalAlignment = Enum.HorizontalAlignment.Left,
 			VerticalAlignment = Enum.VerticalAlignment.Bottom,
-			Padding = UDim.new(0, 2), -- <- you can edit here
+			Padding = UDim.new(0, 0), -- <- you can edit here
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		}),
 		UIPadding = React.createElement("UIPadding", {
