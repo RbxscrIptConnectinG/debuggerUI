@@ -28,7 +28,7 @@ function debugText:init(props)
 		_baseLifeTime = props.LifeTime or 10,
 		_currentTick = tick(),
 		_disappearing = false,
-		_disappearingGoal = 0.01,
+		_disappearingGoal = props._disappearingGoal or 0.01,
 	})
 end
 

@@ -27,9 +27,9 @@ local debuggerUIRoot, dispatch = require(UIs:WaitForChild("debugger"))(LocalPlay
 				LifeTime = custom or 10,
 
 			Questionable to edit data:
-				LayoutOrder = automatic,
+				LayoutOrder = custom or 1,
 				_baseLifeTime = props.LifeTime or 10,
-				_disappearingGoal = 0.01 <- (props.LifeTime / _static_LifeTime) -> _disappearing
+				_disappearingGoal = custom or 0.01 <- (props.LifeTime / _static_LifeTime) -> _disappearing
 
 			Unrecommended to edit data:
 				_currentTick = tick(),
