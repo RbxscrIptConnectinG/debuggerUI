@@ -58,7 +58,8 @@ ServerLog.OnClientEvent:Connect(function(message, enumValue)
 	})
 end)
 
---[[-- testing zone
+--[[
+-- testing zone
 
 local UserInputService = game:GetService("UserInputService")
 
@@ -78,6 +79,7 @@ local function start()
 				hello = {
 					that = randomTexts[math.random(1, #randomTexts)],
 				},
+				randomNumber = math.random(-500, 500),
 			})}\nhello there! {LocalPlayer.UserId}`
 			dispatch:sendText({
 				Text = basic,
