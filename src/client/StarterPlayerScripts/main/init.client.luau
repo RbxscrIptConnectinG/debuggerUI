@@ -24,11 +24,11 @@ local debuggerUIRoot, dispatch = require(UIs:WaitForChild("debugger"))(LocalPlay
 				TextSize = custom or 11,
 				TextColor = custom or Color3.fromRGB(255, 255, 255),
 				Font = custom or Enum.Font.Code,
-				LifeTime = custom or 5,
+				LifeTime = custom or 10,
 
 			Questionable to edit data:
 				LayoutOrder = automatic,
-				_baseLifeTime = props.LifeTime or 5,
+				_baseLifeTime = props.LifeTime or 10,
 				_disappearingGoal = 0.01 <- (props.LifeTime / _static_LifeTime) -> _disappearing
 
 			Unrecommended to edit data:
