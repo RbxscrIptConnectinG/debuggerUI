@@ -60,8 +60,12 @@ end)
 
 --ye.
 
---[[-- testing zone
+-- testing zone
 
+local testing = false
+if not testing then
+	return
+end
 local UserInputService = game:GetService("UserInputService")
 
 local randomTexts = require(script:WaitForChild("randomTexts"))
@@ -83,11 +87,10 @@ local function start()
 				randomNumber = math.random(-500, 500),
 			})}\nhello there! {LocalPlayer.UserId}`
 			dispatch:sendText({
-				Text = "SIMPLE STRING",
+				Text = randomTexts[math.random(1, #randomTexts)],
 				_disappearingGoal = 0.1,
 			})
 		end
 	end)
 end
 start()
-]]
