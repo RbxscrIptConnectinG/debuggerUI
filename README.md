@@ -1,7 +1,7 @@
 # debuggerUI
+<img src="/repository/TestDisplay.png"/>
 recreation of the logs ui from Deadline
 i kinda liked it so i made my own
-<img src="/repository/TestDisplay.png"/>
 
 > [!WARNING]
 > logs created at the same time may have strange placement
