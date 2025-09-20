@@ -59,8 +59,8 @@ ServerLog.OnClientEvent:Connect(function(message, enumValue)
 end)
 
 --ye.
---[[
--- testing zone
+
+--[[-- testing zone
 
 local UserInputService = game:GetService("UserInputService")
 
@@ -83,7 +83,8 @@ local function start()
 				randomNumber = math.random(-500, 500),
 			})}\nhello there! {LocalPlayer.UserId}`
 			dispatch:sendText({
-				Text = basic,
+				Text = "SIMPLE STRING",
+				_disappearingGoal = 0.1,
 			})
 		end
 	end)

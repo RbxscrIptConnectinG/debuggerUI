@@ -13,6 +13,8 @@ local React = require(Packages:WaitForChild("react"))
 local debugText = React.Component:extend("debugText")
 local defaultFont = Enum.Font.Code
 
+debugText.lastUpdate = tick()
+
 function debugText:init(props)
 	self.updater = nil
 
@@ -26,13 +28,15 @@ function debugText:init(props)
 
 		-- DO NOT EDIT
 		_baseLifeTime = props.LifeTime or 10,
-		_currentTick = tick(),
 		_disappearing = false,
 		_disappearingGoal = props._disappearingGoal or 0.01,
+
+		_updateRate = 1 / 60,
 	})
 end
 
 function debugText:render()
+	local currentTick = tick()
 	local viewSize = Vector2.new(math.huge, math.huge)
 	local textSizeDetails = TextService:GetTextSize(self.state.Text, self.state.TextSize, self.state.Font, viewSize)
 
@@ -45,7 +49,7 @@ function debugText:render()
 
 	local Transparency = math.min(
 		self.state._disappearing
-				and (1 - math.max((self.state.LifeTime - self.state._currentTick) / self.state._baseLifeTime, 0) / self.state._disappearingGoal)
+				and (1 - math.max((self.state.LifeTime - currentTick) / self.state._baseLifeTime, 0) / self.state._disappearingGoal)
 			or 0,
 		1
 	)
@@ -71,7 +75,6 @@ function debugText:render()
 		Size = UDim2.new(0, textSizeDetails.X, 0, totalYSize),
 		LayoutOrder = self.state.LayoutOrder,
 		AnchorPoint = Vector2.new(0, 1),
-		Visible = (self.state.LifeTime - self.state._currentTick) > 0,
 	}, {
 		TextLabel = React.createElement("TextLabel", {
 			BackgroundTransparency = 1,
@@ -106,17 +109,23 @@ function debugText:didMount()
 	self.updater = RunService.RenderStepped:Connect(function(dt)
 		if self == nil then
 			self.updater:Disconnect()
+			return
 		end
 		local currentTick = tick()
-		local goal = math.max((self.state.LifeTime - currentTick) / self.state._baseLifeTime, 0)
-		self:setState(function(state)
-			return {
-				_currentTick = currentTick,
-				_disappearing = goal <= self.state._disappearingGoal,
-			}
-		end)
-		if goal <= 0 then
-			self.updater:Disconnect()
+		if tick() >= self.lastUpdate then
+			self.lastUpdate = currentTick + self.state._updateRate
+			local goal = math.max((self.state.LifeTime - currentTick) / self.state._baseLifeTime, 0)
+			local disappearingNow = goal <= self.state._disappearingGoal
+			if disappearingNow then
+				self:setState(function(state)
+					return {
+						_disappearing = disappearingNow,
+					}
+				end)
+			end
+			if goal <= 0 then
+				self.updater:Disconnect()
+			end
 		end
 	end)
 end
