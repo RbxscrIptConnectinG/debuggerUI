@@ -4,7 +4,7 @@ recreation of the logs ui from Deadline.
 I liked it, so I made my own.
 
 > [!WARNING]
-> logs created at the same time may have strange placement
+> **NOT RECOMMENDED TO USE**
 
 this thing is outdated, wait for new version in future
 
