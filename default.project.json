@@ -1,0 +1,29 @@
+{
+  "name": "RoactRecreation",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Remotes": {
+        "$className": "Folder",
+        "ServerLog": {
+          "$className": "RemoteEvent"
+        }
+      },
+      "Modules": {
+        "$className": "Folder",
+        "$path": "src/shared/ReplicatedStorage/Modules",
+        "Packages": {
+          "$path": "Packages/"
+        }
+      }
+    },
+    "ServerScriptService": {
+      "$path": "src/server/ServerScriptService/"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "$path": "src/client/StarterPlayerScripts/"
+      }
+    }
+  }
+}
