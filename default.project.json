@@ -1,5 +1,5 @@
 {
-  "name": "RoactRecreation",
+  "name": "debuggerUI",
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
