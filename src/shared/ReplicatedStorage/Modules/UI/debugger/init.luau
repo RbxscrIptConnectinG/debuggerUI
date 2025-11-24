@@ -10,8 +10,7 @@ local ReactRoblox = require(Packages["React-roblox"])
 local quickFormatter = require(script:WaitForChild("debugFormatter"))
 
 local Store = require(script:WaitForChild("debugStore"))
-local debugGui = require(script:WaitForChild("debugGui")) :: JSDOTLUA_SHARED.React_Component<any, any>
-local debugText = require(script:WaitForChild("debugText")) :: JSDOTLUA_SHARED.React_Component<any, any>
+local debugContainer = require(script:WaitForChild("debugContainer")) :: JSDOTLUA_SHARED.React_Component<any, any>
 
 return function(InitRoot: Instance)
 	assert(InitRoot ~= nil, "you forgot about Root.")
@@ -23,67 +22,50 @@ return function(InitRoot: Instance)
 
 	local root = ReactRoblox.createRoot(screenUI)
 
-	local dispatch = {}
+	local debugger = {}
 
-	dispatch.formatter = quickFormatter
-
-	Store.changed:connect(function(newState, oldState)
-		dispatch:render()
-	end)
+	debugger.formatter = quickFormatter
 
 	-- turning table into string
-	function dispatch:formatTable(...): ({ [any]: any }, string | nil) -> string -- quick
+	function debugger:formatTable(...): ({ [any]: any }, string | nil) -> string -- quick
 		return self.formatter:tableToString(...)
 	end
 
-	-- counts how many items in texts
-	function dispatch:countTexts(): () -> number
-		local number = 0
-		for _, _ in pairs(Store:getState().Texts) do
-			number += 1
-		end
-		return number
-	end
-
 	-- renders root
-	function dispatch:render(onRender): (() -> ()) -> boolean
-		local texts = {}
-		for index, data in pairs(Store:getState().Texts) do
-			texts[index] = React.createElement(debugText, data)
-		end
-		local success, output = pcall(
-			root.render,
-			root,
-			React.createElement(debugGui, {
-				Padding = {
-					Top = UDim.new(0, 5),
-					Bottom = UDim.new(0, 5),
-					Right = UDim.new(0, 5),
-					Left = UDim.new(0, 5),
-				},
-			}, texts)
-		)
-		if onRender ~= nil then
-			onRender(success)
-		end
-		texts = nil
+	function debugger:render(): (() -> ()) -> boolean
+		root:render(React.createElement(debugContainer, {
+			store = Store,
+		}, {
+			Padding = React.createElement("UIPadding", {
+				PaddingTop = UDim.new(0, 5),
+				PaddingBottom = UDim.new(0, 5),
+				PaddingRight = UDim.new(0, 5),
+				PaddingLeft = UDim.new(0, 5),
+			}),
+			UIListLayout = React.createElement("UIListLayout", {
+				HorizontalAlignment = Enum.HorizontalAlignment.Left,
+				VerticalAlignment = Enum.VerticalAlignment.Bottom,
+
+				SortOrder = Enum.SortOrder.LayoutOrder,
+			}),
+		}))
 	end
 
 	-- sends data to texts and renders it
-	function dispatch:sendText(data): (
+	function debugger:sendText(data): (
 		{
 			Text: string | any | nil,
 			TextSize: number | nil,
 			TextColor: Color3 | nil,
 			BackgroundTransparency: number | nil,
+
 			Font: Enum.Font | nil,
 			LifeTime: number | nil,
-			LayoutOrder: nil | number,
+			Fade: nil | number,
 		} | nil
 	) -> nil
-		local currentTick = tick()
 		data = data or {}
-		data.creationTick = currentTick
+		data.creationTick = tick()
 		Store:dispatch({
 			type = "AddText",
 			Value = data,
@@ -96,6 +78,6 @@ return function(InitRoot: Instance)
 		end)
 	end
 
-	dispatch:render() -- to init UI
-	return root, dispatch
+	debugger:render() -- to init UI
+	return debugger, root
 end

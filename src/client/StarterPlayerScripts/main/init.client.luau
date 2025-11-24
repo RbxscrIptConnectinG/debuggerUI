@@ -15,7 +15,7 @@ local UIs = Modules:WaitForChild("UI")
 
 local LocalPlayer = Players.LocalPlayer
 
-local debuggerUIRoot, dispatch = require(UIs:WaitForChild("debugger"))(LocalPlayer.PlayerGui)
+local debugger, debuggerUIRoot = require(UIs:WaitForChild("debugger"))(LocalPlayer.PlayerGui)
 
 --[[
 		
@@ -23,8 +23,12 @@ local debuggerUIRoot, dispatch = require(UIs:WaitForChild("debugger"))(LocalPlay
 				Text = custom or "hi. i'm debug text!",
 				TextSize = custom or 11,
 				TextColor = custom or Color3.fromRGB(255, 255, 255),
+
+				BackgroundTransparency = custom or 0.35
+
 				Font = custom or Enum.Font.Code,
 				LifeTime = custom or 10,
+				Fade = custom or 0.5
 
 		
 --]]
@@ -35,20 +39,22 @@ local colors = {
 	[Enum.MessageType.MessageInfo] = Color3.fromRGB(75, 163, 255),
 	[Enum.MessageType.MessageWarning] = Color3.fromRGB(255, 142, 60),
 }
+local allowPrints = true
+if allowPrints then
+	LogService.MessageOut:Connect(function(message, messageType: Enum.MessageType)
+		debugger:sendText({
+			Text = message,
+			TextColor = colors[messageType] or colors[Enum.MessageType.MessageOutput],
+		})
+	end)
 
-LogService.MessageOut:Connect(function(message, messageType: Enum.MessageType)
-	dispatch:sendText({
-		Text = message,
-		TextColor = colors[messageType] or colors[Enum.MessageType.MessageOutput],
-	})
-end)
-
-ServerLog.OnClientEvent:Connect(function(message, enumValue)
-	dispatch:sendText({
-		Text = message,
-		TextColor = colors[Enum.MessageType:FromValue(enumValue or 0)],
-	})
-end)
+	ServerLog.OnClientEvent:Connect(function(message, enumValue)
+		debugger:sendText({
+			Text = message,
+			TextColor = colors[Enum.MessageType:FromValue(enumValue or 0)],
+		})
+	end)
+end
 
 --ye.
 
@@ -69,7 +75,7 @@ end
 local function start()
 	UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			local basic = `{randomTexts[math.random(1, #randomTexts)]}: {dispatch:formatTable({
+			local basic = `{randomTexts[math.random(1, #randomTexts)]}: {debugger:formatTable({
 				hi = {
 					this = randomTexts[math.random(1, #randomTexts)],
 				},
@@ -78,7 +84,7 @@ local function start()
 				},
 				randomNumber = math.random(-500, 500),
 			})}\nhello there! {LocalPlayer.UserId}`
-			dispatch:sendText({
+			debugger:sendText({
 				Text = randomTexts[math.random(1, #randomTexts)],
 			})
 		end
