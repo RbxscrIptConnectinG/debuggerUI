@@ -60,7 +60,7 @@ end
 
 -- testing zone
 
-local testing = true
+local testing = false
 if not testing then
 	return
 end
