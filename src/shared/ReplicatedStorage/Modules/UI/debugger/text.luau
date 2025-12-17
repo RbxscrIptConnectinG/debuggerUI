@@ -11,6 +11,7 @@ local Packages = Modules:WaitForChild("Packages")
 local JSDOTLUA_SHARED = require(Packages:WaitForChild("JsDotLua-Shared"))
 local React = require(Packages.React)
 local Otter = require(Packages.Otter)
+local Cryo = require(Packages.Cryo)
 
 local debugText = React.Component:extend("debugText") :: JSDOTLUA_SHARED.React_Component<any, any>
 
@@ -30,8 +31,6 @@ type props = {
 	LifeTime: number,
 
 	Fade: number,
-
-	creationTick: number,
 
 	children: { [any]: JSDOTLUA_SHARED.React_Element<any> } | nil,
 }
@@ -64,13 +63,8 @@ function debugText:init(props: props, state)
 	end)
 
 	self.motor = Otter.createSingleMotor(1)
-	self.motor:onStep(function(value)
+	self.__MOTOR_CONNECTION1 = self.motor:onStep(function(value)
 		self.animationBindingUpdate(value)
-	end)
-	self.motor:onComplete(function()
-		self:setState({
-			isAnimating = false,
-		})
 	end)
 end
 
@@ -85,13 +79,11 @@ function debugText:render()
 			table.insert(lines, line)
 		end
 	end
-	local backgrounds = {}
 	local totalYSize = 0
-
-	for i, line in ipairs(lines) do
+	local backgrounds = Cryo.List.map(lines, function(line, i)
 		local size = TextService:GetTextSize(line, props.TextSize, props.Font, viewSize)
 		totalYSize += math.ceil(size.Y)
-		backgrounds[i] = React.createElement("Frame", {
+		return React.createElement("Frame", {
 			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
 			BorderSizePixel = 0,
 			BackgroundTransparency = self.backgroundTransparencyBinding,
@@ -99,13 +91,13 @@ function debugText:render()
 			LayoutOrder = i,
 			ZIndex = -5,
 		})
-	end
+	end)
 	return React.createElement("Frame", {
 		BackgroundTransparency = 1,
 		Size = UDim2.new(0, textSizeDetails.X, 0, totalYSize),
 		Position = props.Position,
 		AnchorPoint = props.AnchorPoint,
-		key = tostring(props.creationTick), -- i'm new gen i'm new gen!!!
+		key = props.key, -- i'm new gen i'm new gen!!!
 	}, {
 		TextLabel = React.createElement("TextLabel", {
 			BackgroundTransparency = 1,
@@ -157,6 +149,7 @@ function debugText:componentWillUnmount()
 		self.Updater = nil
 	end
 	self.motor:destroy()
+	self.__MOTOR_CONNECTION1()
 	self.animationBinding = nil
 	self.animationBindingUpdate = nil
 

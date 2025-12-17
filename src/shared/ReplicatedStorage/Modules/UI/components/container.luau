@@ -5,16 +5,13 @@ local Packages = Modules:WaitForChild("Packages")
 
 local JSDOTLUA_SHARED = require(Packages:WaitForChild("JsDotLua-Shared"))
 local React = require(Packages.React)
-local Cryo = require(Packages.Cryo)
 
 local Container = React.Component:extend("Container") :: JSDOTLUA_SHARED.React_Component<any, any>
-local DebugText = require(script.Parent:WaitForChild("debugText"))
 
 export type containerProps = {
 	Size: UDim2 | nil,
 	AnchorPoint: Vector2 | nil,
 	Position: UDim2 | nil,
-	store: Rodux.Store,
 	Padding: {
 		Top: UDim | nil,
 		Bottom: UDim | nil,
@@ -37,41 +34,23 @@ Container.defaultProps = {
 	},
 }
 
-function Container:init(props: containerProps, state)
-	self.state = {
-		Texts = {},
-	}
-end
-
 function Container:render()
 	local props: containerProps = self.props
-	local state = self.state
 	return React.createElement("Frame", {
 		Size = props.ContainerSize or UDim2.fromScale(1, 1),
 		BorderSizePixel = 0,
 		AnchorPoint = props.AnchorPoint,
 		Position = props.Position,
 		Transparency = 1,
-	}, state.Texts, props.children)
-end
+	}, {
+		__Padding = React.createElement("UIPadding", {
+			PaddingTop = props.Padding.Top,
+			PaddingBottom = props.Padding.Bottom,
 
-function Container:componentDidMount()
-	local props = self.props
-	self.connection = props.store.changed:connect(function(newState, oldState)
-		local reactElements = {}
-		for i, v in pairs(newState.Texts) do
-			reactElements[i] = React.createElement(DebugText, v)
-		end
-		self:setState({
-			Texts = reactElements,
-		})
-
-		reactElements = nil
-	end)
-end
-function Container:componentWillUnmount()
-	self.connection.disconnect()
-	self.connection = nil
+			PaddingLeft = props.Padding.Left,
+			PaddingRight = props.Padding.Right,
+		}),
+	}, props.children)
 end
 
 return Container

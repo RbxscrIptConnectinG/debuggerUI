@@ -10,16 +10,14 @@ local reducer = Rodux.createReducer({
 }, {
 	AddText = function(state, action)
 		local newState = state
-		table.insert(newState.Texts, action.Value)
+		table.insert(newState.Texts, action.data)
 		return newState
 	end,
 	RemoveText = function(state, action)
 		local newState = state
-		for index, value in pairs(newState.Texts) do
-			if Cryo.Dictionary.equals(value, action.Value) then
-				newState.Texts[index] = nil
-			end
-		end
+
+		newState.Texts = Cryo.List.removeValue(newState.Texts, action.data)
+
 		return newState
 	end,
 })

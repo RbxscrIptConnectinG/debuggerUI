@@ -4,13 +4,18 @@ local RunService = game:GetService("RunService")
 local Modules = ReplicatedStorage:WaitForChild("Modules")
 local Packages = Modules:WaitForChild("Packages")
 
-local JSDOTLUA_SHARED = require(Packages:WaitForChild("JsDotLua-Shared"))
+local JSDOTLUA_SHARED = require(Packages["JsDotLua-Shared"])
 local React = require(Packages.React)
 local ReactRoblox = require(Packages["React-roblox"])
-local quickFormatter = require(script:WaitForChild("debugFormatter"))
+local quickFormatter = require(script.formatter)
 
-local Store = require(script:WaitForChild("debugStore"))
-local debugContainer = require(script:WaitForChild("debugContainer")) :: JSDOTLUA_SHARED.React_Component<any, any>
+local components = script.Parent.components
+
+local container = require(components.container) :: JSDOTLUA_SHARED.React_Component<any, any>
+local RoduxProvider = require(components.RoduxProvider)
+local Mapper = require(script.mapper)
+
+local _64BIT = 2 ^ 64
 
 return function(InitRoot: Instance)
 	assert(InitRoot ~= nil, "you forgot about Root.")
@@ -23,24 +28,29 @@ return function(InitRoot: Instance)
 	local root = ReactRoblox.createRoot(screenUI)
 
 	local debugger = {}
+	debugger.STORE = require(script.store)
 
 	debugger.formatter = quickFormatter
 
 	-- turning table into string
-	function debugger:formatTable(...): ({ [any]: any }, string | nil) -> string -- quick
+	function debugger:formatTable(...): ({ [any]: any }, string | nil) -> string -- quick maybe.
 		return self.formatter:tableToString(...)
 	end
 
 	-- renders root
-	function debugger:render(): (() -> ()) -> boolean
-		root:render(React.createElement(debugContainer, {
-			store = Store,
+	function debugger:render(): boolean
+		root:render(React.createElement(container, {
+			Padding = {
+				Top = UDim.new(0, 5),
+				Bottom = UDim.new(0, 5),
+				Right = UDim.new(0, 5),
+				Left = UDim.new(0, 5),
+			},
 		}, {
-			Padding = React.createElement("UIPadding", {
-				PaddingTop = UDim.new(0, 5),
-				PaddingBottom = UDim.new(0, 5),
-				PaddingRight = UDim.new(0, 5),
-				PaddingLeft = UDim.new(0, 5),
+			React.createElement(RoduxProvider, {
+				store = self.STORE,
+			}, {
+				mapper = React.createElement(Mapper),
 			}),
 			UIListLayout = React.createElement("UIListLayout", {
 				HorizontalAlignment = Enum.HorizontalAlignment.Left,
@@ -51,7 +61,7 @@ return function(InitRoot: Instance)
 		}))
 	end
 
-	-- sends data to texts and renders it
+	-- sends data to store
 	function debugger:sendText(data): (
 		{
 			Text: string | any | nil,
@@ -65,15 +75,15 @@ return function(InitRoot: Instance)
 		} | nil
 	) -> nil
 		data = data or {}
-		data.creationTick = tick()
-		Store:dispatch({
+		data.id = tostring(tick() / _64BIT)
+		self.STORE:dispatch({
 			type = "AddText",
-			Value = data,
+			data = data,
 		})
-		task.delay((data.LifeTime or 10), function()
-			Store:dispatch({
+		task.delay(data.LifeTime or 10, function()
+			self.STORE:dispatch({
 				type = "RemoveText",
-				Value = data,
+				data = data,
 			})
 		end)
 	end

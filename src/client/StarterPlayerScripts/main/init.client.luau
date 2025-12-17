@@ -17,22 +17,6 @@ local LocalPlayer = Players.LocalPlayer
 
 local debugger, debuggerUIRoot = require(UIs:WaitForChild("debugger"))(LocalPlayer.PlayerGui)
 
---[[
-		
-			Allowed to edit data:
-				Text = custom or "hi. i'm debug text!",
-				TextSize = custom or 11,
-				TextColor = custom or Color3.fromRGB(255, 255, 255),
-
-				BackgroundTransparency = custom or 0.35
-
-				Font = custom or Enum.Font.Code,
-				LifeTime = custom or 10,
-				Fade = custom or 0.5
-
-		
---]]
-
 local colors = {
 	[Enum.MessageType.MessageOutput] = Color3.new(255, 255, 255),
 	[Enum.MessageType.MessageError] = Color3.fromRGB(255, 68, 68),
@@ -56,11 +40,27 @@ if allowPrints then
 	end)
 end
 
+--[[
+		
+			Allowed to edit data:
+				Text = custom or "hi. i'm debug text!",
+				TextSize = custom or 11,
+				TextColor = custom or Color3.fromRGB(255, 255, 255),
+
+				BackgroundTransparency = custom or 0.35
+
+				Font = custom or Enum.Font.Code,
+				LifeTime = custom or 10,
+				Fade = custom or 0.5
+
+		
+--]]
+
 --ye.
 
 -- testing zone
 
-local testing = false
+local testing = true
 if not testing then
 	return
 end
