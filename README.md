@@ -1,3 +1,3 @@
-# debuggerUI
+# debuggerUI <- now just "OutputUI"
 <img src="/repository/TestDisplayV2.png"/>
-recreation of the logs ui from Deadline.
+almost ok recreation of the output ui from Deadline.
