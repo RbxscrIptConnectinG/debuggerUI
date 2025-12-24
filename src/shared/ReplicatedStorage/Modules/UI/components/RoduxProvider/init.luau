@@ -3,24 +3,22 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Modules = ReplicatedStorage.Modules
 local Packages = Modules.Packages
 
-local JSDOTLUA_SHARED = require(Packages["JsDotLua-Shared"])
 local React = require(Packages.React)
 local Cryo = require(Packages.Cryo)
-
-local Provider: JSDOTLUA_SHARED.React_ComponentType<any> = React.Component:extend("Provider")
-
-export type Props = {
+export type props = {
 	store: Rodux.Store,
 	mapFunc: (value: any, key: any) -> (any, any),
 
-	children: { [any]: JSDOTLUA_SHARED.React_Element<any> } | nil,
+	children: { [any]: any } | nil,
 	key: string | nil,
 	ref: any,
 }
+export type state = { [any]: any }
+local Provider: React_Component<props, state> = React.Component:extend("Provider")
 
 Provider.defaultProps = {}
 
-function Provider:init(props: Props)
+function Provider:init(props: props)
 	self.state = props.store:getState()
 
 	self.connection = props.store.changed:connect(function(newState, oldState)
@@ -29,7 +27,7 @@ function Provider:init(props: Props)
 end
 
 function Provider:render()
-	local props: Props = self.props
+	local props: props = self.props
 	local state = props.mapFunc ~= nil and Cryo.Dictionary.map(self.state, props.mapFunc) or self.state
 
 	return Cryo.Dictionary.map(props.children, function(child, index)

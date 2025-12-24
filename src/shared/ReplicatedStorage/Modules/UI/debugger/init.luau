@@ -4,14 +4,13 @@ local RunService = game:GetService("RunService")
 local Modules = ReplicatedStorage:WaitForChild("Modules")
 local Packages = Modules:WaitForChild("Packages")
 
-local JSDOTLUA_SHARED = require(Packages["JsDotLua-Shared"])
 local React = require(Packages.React)
 local ReactRoblox = require(Packages["React-roblox"])
 local quickFormatter = require(script.formatter)
 
 local components = script.Parent.components
 
-local container = require(components.container) :: JSDOTLUA_SHARED.React_Component<any, any>
+local container = require(components.container) :: any
 local RoduxProvider = require(components.RoduxProvider)
 local Mapper = require(script.mapper)
 

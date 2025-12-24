@@ -8,13 +8,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Modules = ReplicatedStorage:WaitForChild("Modules")
 local Packages = Modules:WaitForChild("Packages")
 
-local JSDOTLUA_SHARED = require(Packages:WaitForChild("JsDotLua-Shared"))
 local React = require(Packages.React)
 local Otter = require(Packages.Otter)
 local Cryo = require(Packages.Cryo)
-
-local debugText = React.Component:extend("debugText") :: JSDOTLUA_SHARED.React_Component<any, any>
-
 type props = {
 	[any]: any,
 
@@ -32,8 +28,13 @@ type props = {
 
 	Fade: number,
 
-	children: { [any]: JSDOTLUA_SHARED.React_Element<any> } | nil,
+	children: { [any]: any } | nil,
 }
+type state = {
+	isAnimating: boolean,
+}
+local debugText: React_Component<props, state> = React.Component:extend("debugText")
+
 debugText.defaultProps = {
 	Text = "TESTING-TESTING-TESTING",
 	TextSize = 14,

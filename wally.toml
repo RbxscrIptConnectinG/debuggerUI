@@ -10,4 +10,3 @@ React = "jsdotlua/react@17.2.1"
 Otter = "jsdotlua/otter@1.2.1"
 Rodux = "roblox/rodux@3.0.0"
 Cryo = "ya-ya-620/cryo@1.1.0"
-JsDotLua-Shared = "jsdotlua/shared@17.2.1" # Lol.

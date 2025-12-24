@@ -3,12 +3,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Modules = ReplicatedStorage:WaitForChild("Modules")
 local Packages = Modules:WaitForChild("Packages")
 
-local JSDOTLUA_SHARED = require(Packages:WaitForChild("JsDotLua-Shared"))
 local React = require(Packages.React)
 
-local Container = React.Component:extend("Container") :: JSDOTLUA_SHARED.React_Component<any, any>
-
-export type containerProps = {
+export type props = {
 	Size: UDim2 | nil,
 	AnchorPoint: Vector2 | nil,
 	Position: UDim2 | nil,
@@ -18,8 +15,10 @@ export type containerProps = {
 		Left: UDim | nil,
 		Right: UDim | nil,
 	} | nil,
-	children: { [any]: JSDOTLUA_SHARED.React_Element<any> } | nil,
+	children: { [any]: any } | nil,
 }
+
+local Container: React_Component<props, any> = React.Component:extend("Container")
 
 Container.defaultProps = {
 	Size = UDim2.fromScale(1, 1),
@@ -35,9 +34,9 @@ Container.defaultProps = {
 }
 
 function Container:render()
-	local props: containerProps = self.props
+	local props: props = self.props
 	return React.createElement("Frame", {
-		Size = props.ContainerSize or UDim2.fromScale(1, 1),
+		Size = props.Size or UDim2.fromScale(1, 1),
 		BorderSizePixel = 0,
 		AnchorPoint = props.AnchorPoint,
 		Position = props.Position,
