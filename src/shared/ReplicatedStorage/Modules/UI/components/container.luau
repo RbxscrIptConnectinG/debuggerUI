@@ -36,7 +36,7 @@ Container.defaultProps = {
 function Container:render()
 	local props: props = self.props
 	return React.createElement("Frame", {
-		Size = props.Size or UDim2.fromScale(1, 1),
+		Size = props.Size,
 		BorderSizePixel = 0,
 		AnchorPoint = props.AnchorPoint,
 		Position = props.Position,
